@@ -380,6 +380,14 @@ func install(args []string) error {
 
 	// 4. Build and install
 	for _, gom := range goms {
+
+		if install, ok := gom.options["install"].(string); ok {
+			if install != "true" {
+				fmt.Sprintf("Not printing %s", gom.name)
+				continue
+			}
+		}
+
 		err = gom.Build(args)
 		if err != nil {
 			return err
