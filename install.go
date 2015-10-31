@@ -170,7 +170,6 @@ func (gom *Gom) pullPrivate(srcdir string) (err error) {
 	pullCmd := "git pull origin"
 	pullArgs := strings.Split(pullCmd, " ")
 	err = run(pullArgs, Blue)
-	fmt.Printf("%+v\n", pullArgs)
 	if err != nil {
 		return
 	}
@@ -179,7 +178,7 @@ func (gom *Gom) pullPrivate(srcdir string) (err error) {
 }
 
 func (gom *Gom) clonePrivate(srcdir string) (err error) {
-	privateUrl, ok := gom.options["privateUrl"].(string)
+	privateUrl, ok := gom.options["repo"].(string)
 	if !ok {
 		name := strings.Split(gom.name, "/")
 		privateUrl = fmt.Sprintf("git@%s:%s/%s", name[0], name[1], name[2])
