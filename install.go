@@ -179,7 +179,7 @@ func (gom *Gom) pullPrivate(srcdir string) (err error) {
 }
 
 func (gom *Gom) clonePrivate(srcdir string) (err error) {
-	privateUrl, ok := gom.options["repo"].(string)
+	privateUrl, ok := gom.options["privateUrl"].(string)
 	if !ok {
 		name := strings.Split(gom.name, "/")
 		privateUrl = fmt.Sprintf("git@%s:%s/%s", name[0], name[1], name[2])
