@@ -99,6 +99,7 @@ func has(c interface{}, key string) bool {
 }
 
 func (gom *Gom) Clone(args []string) error {
+	privateRepo := false
 	vendor, err := filepath.Abs(vendorFolder)
 	if err != nil {
 		return err
@@ -124,6 +125,7 @@ func (gom *Gom) Clone(args []string) error {
 		}
 	} else if private, ok := gom.options["private"].(string); ok {
 		if private == "true" {
+			privateRepo = true
 			target, ok := gom.options["target"].(string)
 			if !ok {
 				target = gom.name
@@ -144,12 +146,14 @@ func (gom *Gom) Clone(args []string) error {
 		}
 	}
 
-	cmdArgs := []string{"go", "get", "-d"}
-	cmdArgs = append(cmdArgs, args...)
-	cmdArgs = append(cmdArgs, gom.name)
-
-	fmt.Printf("downloading %s\n", gom.name)
-	return run(cmdArgs, Blue)
+	if !privateRepo {
+		cmdArgs := []string{"go", "get", "-d"}
+		cmdArgs = append(cmdArgs, args...)
+		cmdArgs = append(cmdArgs, gom.name)
+		fmt.Printf("downloading %s\n", gom.name)
+		return run(cmdArgs, Blue)
+	}
+	return nil
 }
 
 func (gom *Gom) pullPrivate(srcdir string) (err error) {
@@ -174,10 +178,14 @@ func (gom *Gom) pullPrivate(srcdir string) (err error) {
 }
 
 func (gom *Gom) clonePrivate(srcdir string) (err error) {
-	name := strings.Split(gom.name, "/")
-	privateUrl := fmt.Sprintf("git@%s:%s/%s", name[0], name[1], name[2])
+	privateUrl, ok := gom.options["repo"].(string)
+	if !ok {
+		name := strings.Split(gom.name, "/")
+		privateUrl = fmt.Sprintf("git@%s:%s/%s", name[0], name[1], name[2])
+	}
 
 	fmt.Printf("fetching private repo %s\n", gom.name)
+	fmt.Printf("fetching private repo srcdir %s\n", srcdir)
 	cloneCmd := []string{"git", "clone", privateUrl, srcdir}
 	err = run(cloneCmd, Blue)
 	if err != nil {
@@ -369,6 +377,14 @@ func install(args []string) error {
 
 	// 4. Build and install
 	for _, gom := range goms {
+
+		if install, ok := gom.options["install"].(string); ok {
+			if install != "true" {
+				fmt.Sprintf("Not installing %s\n", gom.name)
+				continue
+			}
+		}
+
 		err = gom.Build(args)
 		if err != nil {
 			return err

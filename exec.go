@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/daviddengcn/go-colortext"
 	"os"
 	"os/exec"
 	"os/signal"
 	"path/filepath"
 	"strings"
 	"syscall"
+
+	"github.com/daviddengcn/go-colortext"
 )
 
 type Color int
