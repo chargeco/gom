@@ -236,7 +236,6 @@ func (gom *Gom) Checkout() error {
 
 func (gom *Gom) Build(args []string) error {
 	installCmd := append([]string{"go", "install"}, args...)
-	//	fmt.Printf("%+v\n", installCmd)
 	vendor, err := filepath.Abs(vendorFolder)
 	if err != nil {
 		return err
@@ -382,7 +381,7 @@ func install(args []string) error {
 
 		if install, ok := gom.options["install"].(string); ok {
 			if install != "true" {
-				fmt.Sprintf("Not printing %s", gom.name)
+				fmt.Sprintf("Not installing %s\n", gom.name)
 				continue
 			}
 		}
