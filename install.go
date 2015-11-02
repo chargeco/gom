@@ -187,7 +187,6 @@ func (gom *Gom) clonePrivate(srcdir string) (err error) {
 	fmt.Printf("fetching private repo %s\n", gom.name)
 	fmt.Printf("fetching private repo srcdir %s\n", srcdir)
 	cloneCmd := []string{"git", "clone", privateUrl, srcdir}
-	fmt.Printf("%+v", cloneCmd)
 	err = run(cloneCmd, Blue)
 	if err != nil {
 		return
