@@ -184,14 +184,27 @@ func (gom *Gom) clonePrivate(srcdir string) (err error) {
 		privateUrl = fmt.Sprintf("git@%s:%s/%s", name[0], name[1], name[2])
 	}
 
+	cloneCmd := []string{"git", "clone"}
+
+	if branch, ok := gom.options["branch"].(string); ok {
+		cloneCmd = append(cloneCmd, "--branch")
+		cloneCmd = append(cloneCmd, branch)
+		cloneCmd = append(cloneCmd,  "--single-branch")
+
+	}
+
+	cloneCmd = append(cloneCmd, privateUrl)
+	cloneCmd = append(cloneCmd, srcdir)
+
 	fmt.Printf("fetching private repo %s\n", gom.name)
 	fmt.Printf("fetching private repo srcdir %s\n", srcdir)
-	cloneCmd := []string{"git", "clone", privateUrl, srcdir}
+	fmt.Printf("Command going to run %v\n", cloneCmd)
 	err = run(cloneCmd, Blue)
 	if err != nil {
 		return
 	}
 
+	fmt.Printf("Success in cloning private\n")
 	return
 }
 
